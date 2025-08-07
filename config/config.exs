@@ -9,6 +9,12 @@ import Config
 
 config :og_image, env: Mix.env()
 
+# Configures the image cache
+config :og_image, :image_cache,
+  version: "1",
+  max_bytes: 50_000_000,
+  enabled: true
+
 config :og_image,
   generators: [timestamp_type: :utc_datetime]
 

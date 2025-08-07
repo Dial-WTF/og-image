@@ -56,7 +56,8 @@ defmodule OgImage.MixProject do
       {:html_sanitize_ex, "~> 1.4"},
       {:new_relic_agent, "~> 1.0"},
       {:honeybadger, "~> 0.21"},
-      {:logflare_logger_backend, "~> 0.11.0"}
+      {:logflare_logger_backend, "~> 0.11.0"},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
   end
 

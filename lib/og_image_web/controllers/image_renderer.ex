@@ -7,6 +7,7 @@ defmodule OgImageWeb.ImageRenderer do
   import Phoenix.Template, only: [render_to_string: 4]
   import Plug.Conn
 
+  alias OgImage.ImageCache
   alias OgImageWeb.ImageHTML
 
   @doc """
@@ -14,13 +15,12 @@ defmodule OgImageWeb.ImageRenderer do
   """
   @spec render_image(Plug.Conn.t(), template :: atom()) :: Plug.Conn.t()
   def render_image(%{path_info: ["image"]} = conn, template) do
-    assigns = Map.put(conn.assigns, :layout, {OgImageWeb.Layouts, "image"})
-    html = render_to_string(ImageHTML, to_string(template), "html", assigns)
-
     image =
-      "take-screenshot"
-      |> NodeJS.call!([html], binary: true)
-      |> Base.decode64!()
+      if cache_enabled?() do
+        maybe_get_cached_image(conn, template)
+      else
+        generate_image(conn, template)
+      end
 
     conn
     |> put_resp_content_type("image/png", nil)
@@ -34,5 +34,60 @@ defmodule OgImageWeb.ImageRenderer do
   # When the request path is `/preview`, return the HTML representation
   def render_image(%{path_info: ["preview"]} = conn, template) do
     render(conn, template)
+  end
+
+  # Private helpers
+
+  defp maybe_get_cached_image(conn, template) do
+    cache_key = generate_cache_key(conn)
+    cache_dir = cache_dir()
+
+    case ImageCache.get_path(cache_dir, cache_key) do
+      nil ->
+        generate_image(conn, template)
+
+      path ->
+        case File.read(path) do
+          {:ok, data} -> Base.decode64!(data)
+          {:error, _} -> generate_image(conn, template)
+        end
+    end
+  end
+
+  defp generate_image(conn, template) do
+    assigns = Map.put(conn.assigns, :layout, {OgImageWeb.Layouts, "image"})
+    html = render_to_string(ImageHTML, to_string(template), "html", assigns)
+    image_data = NodeJS.call!("take-screenshot", [html], binary: true)
+
+    if cache_enabled?() do
+      cache_key = generate_cache_key(conn)
+      cache_dir = cache_dir()
+      ImageCache.put(cache_dir, cache_key, image_data, cache_max_bytes())
+    end
+
+    Base.decode64!(image_data)
+  end
+
+  defp generate_cache_key(%{query_string: query_string} = _conn) do
+    version = Application.get_env(:og_image, :image_cache)[:version] || "1"
+
+    query_string_hash =
+      :sha256
+      |> :crypto.hash(query_string)
+      |> Base.url_encode64(padding: false)
+
+    "#{version}.#{query_string_hash}"
+  end
+
+  defp cache_enabled? do
+    !!Application.get_env(:og_image, :image_cache)[:enabled]
+  end
+
+  defp cache_max_bytes do
+    Application.get_env(:og_image, :image_cache)[:max_bytes] || 1_000_000
+  end
+
+  defp cache_dir do
+    Path.join(System.tmp_dir!(), "og_image_cache")
   end
 end

@@ -6,6 +6,7 @@ This project was originally inspired by [Vercel OG image](https://github.com/ver
 ✅ Extensible templating system \
 ✅ [Tailwind CSS](https://tailwindcss.com/) for styling image templates \
 ✅ Emoji support \
+✅ Caching \
 ✅ Ready for deployment to [Fly](https://fly.io/)
 
 The result: beautiful open graph images like this one, generated from custom HTML/CSS templates!
@@ -114,6 +115,23 @@ The image controller serves content over two different routes:
 ## Customizing styles
 
 The CSS styles for image templates are defined in the [`OgImageWeb.Layouts.image_template_styles/1`](https://github.com/svycal/og-image/blob/main/lib/og_image_web/components/layouts.ex) component. For performance, all definitions (including fonts) are inlined inside a `<style>` tag and rendered directly on page (so that the headless browser doesn't need to make any network requests when rendering the image).
+
+## Configuring caching
+
+When an image is generated, it gets cached in a temp directory on the server. 
+
+You can configure the max size of the cache in bytes with the `:max_bytes` option. The default is `50_000_000` bytes (50MB).
+
+You can disable caching by setting `:enabled` to `false`.
+
+The `:version` option is used to invalidate the cache when the template changes. This is useful when you want to invalidate the cache when the template changes.
+
+```elixir
+config :og_image, :image_cache,
+  enabled: true,
+  max_bytes: 50_000_000,
+  version: "1"
+```
 
 ## Deploying to Fly
 
