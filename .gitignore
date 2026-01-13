@@ -39,3 +39,6 @@ npm-debug.log
 
 # OS Noise
 .DS_Store
+
+# Environment variables
+.env
