@@ -23,10 +23,13 @@ async function takeScreenshot(html) {
     executablePath,
     headless: true,
     args: [
-      "--disable-gpu",
       "--disable-dev-shm-usage",
       "--disable-setuid-sandbox",
       "--no-sandbox",
+      "--enable-webgl",
+      "--use-gl=swiftshader",
+      "--ignore-gpu-blacklist",
+      "--ignore-gpu-blocklist",
     ],
   });
 
