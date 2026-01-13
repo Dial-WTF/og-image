@@ -115,8 +115,8 @@ defmodule OgImageWeb.ImageRenderer do
   end
 
   defp generate_url_image(url, selector) do
-    # Pass selector as nil if not provided, Node.js will handle it
-    selector_arg = selector || nil
-    image_data = NodeJS.call!("screenshot-url", [url, selector_arg], binary: true)
+    # Build args list conditionally
+    args = if selector, do: [url, selector], else: [url]
+    image_data = NodeJS.call!("screenshot-url", args, binary: true)
     Base.decode64!(image_data)
   end

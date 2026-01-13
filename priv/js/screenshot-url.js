@@ -13,10 +13,11 @@ const executablePath =
  * Takes a screenshot of a URL, optionally screenshotting just a specific element.
  *
  * @param {string} url - The URL to screenshot.
- * @param {string|null} selector - Optional CSS selector to screenshot just that element.
+ * @param {string} [selector] - Optional CSS selector to screenshot just that element.
  * @returns a Base64 encoded string of the screenshot.
  */
-async function screenshotUrl(url, selector = null) {
+async function screenshotUrl(url, selector) {
+  selector = selector || null;
   const width = 1200;
   const height = 630;
   const waitTime = 1000;
