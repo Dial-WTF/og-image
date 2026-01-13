@@ -31,4 +31,29 @@ defmodule OgImageWeb.ImageHelpers do
 
   def prepare_html(_, default) when is_binary(default), do: Phoenix.HTML.raw(default)
   def prepare_html(_, default), do: default
+
+  @doc """
+  Splits text and applies gradient styling to "From your wallet." part.
+  Returns HTML-safe string with gradient applied.
+  """
+  @spec prepare_text_with_gradient(value :: any()) :: Phoenix.HTML.safe() | nil
+  def prepare_text_with_gradient(value) when is_binary(value) do
+    # Check if text contains "From your wallet." pattern
+    if String.contains?(value, "From your wallet.") do
+      # Split and rebuild with gradient
+      [before, rest] = String.split(value, "From your wallet.", parts: 2)
+      
+      before_html = if before != "", do: Phoenix.HTML.safe_to_string(prepare_html(before)), else: ""
+      rest_html = if rest != "", do: Phoenix.HTML.safe_to_string(prepare_html(rest)), else: ""
+      
+      gradient_html = ~s(<span class="bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent">From your wallet.</span>)
+      
+      Phoenix.HTML.raw("#{before_html}#{gradient_html}#{rest_html}")
+    else
+      # No gradient pattern, return normal HTML
+      prepare_html(value)
+    end
+  end
+
+  def prepare_text_with_gradient(_), do: nil
 end

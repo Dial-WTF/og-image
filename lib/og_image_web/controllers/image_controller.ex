@@ -18,7 +18,8 @@ defmodule OgImageWeb.ImageController do
 
   def show(conn, %{"template" => "dial_dark", "text" => text}) do
     conn
-    |> assign(:text, prepare_html(text))
+    |> assign(:text, text)
+    |> assign(:text_html, prepare_text_with_gradient(text))
     |> render_image(:dial_dark)
   end
 

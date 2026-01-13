@@ -52,6 +52,7 @@ defmodule OgImageWeb.ImageHTML do
 
   @doc """
   Dial template with dark background - modern web3 aesthetic.
+  Matches the home page design with gradient text.
   """
   def dial_dark(assigns) do
     ~H"""
@@ -61,7 +62,7 @@ defmodule OgImageWeb.ImageHTML do
       </div>
       <div class="grow flex items-center px-20">
         <h1 class="font-extrabold text-white text-[7rem] leading-[1.2]">
-          <%= @text %>
+          <%= @text_html || @text %>
         </h1>
       </div>
     </body>
