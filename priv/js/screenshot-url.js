@@ -57,16 +57,24 @@ async function screenshotUrl(url, selector) {
     };
 
     // If a selector is provided, screenshot just that element
-    if (selector && selector !== null && selector !== undefined) {
-      const element = await page.$(selector);
-      if (!element) {
-        throw new Error(`Element with selector "${selector}" not found`);
+    if (selector && selector !== null && selector !== undefined && selector !== "") {
+      try {
+        const element = await page.$(selector);
+        if (!element) {
+          // If element not found, just screenshot the whole page instead of failing
+          console.warn(`Element with selector "${selector}" not found, screenshotting full page`);
+        } else {
+          const boundingBox = await element.boundingBox();
+          if (!boundingBox) {
+            console.warn(`Element with selector "${selector}" has no bounding box, screenshotting full page`);
+          } else {
+            screenshotOptions.clip = boundingBox;
+          }
+        }
+      } catch (err) {
+        // If selector fails, just screenshot the whole page
+        console.warn(`Error with selector "${selector}": ${err.message}, screenshotting full page`);
       }
-      const boundingBox = await element.boundingBox();
-      if (!boundingBox) {
-        throw new Error(`Element with selector "${selector}" has no bounding box`);
-      }
-      screenshotOptions.clip = boundingBox;
     }
 
     // Take the screenshot

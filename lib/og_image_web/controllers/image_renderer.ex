@@ -3,6 +3,8 @@ defmodule OgImageWeb.ImageRenderer do
   Functions responsible for rendering images.
   """
 
+  require Logger
+
   import Phoenix.Controller
   import Phoenix.Template, only: [render_to_string: 4]
   import Plug.Conn
@@ -123,8 +125,6 @@ defmodule OgImageWeb.ImageRenderer do
       Base.decode64!(image_data)
     rescue
       e ->
-        # Log error for debugging
-        require Logger
         Logger.error("Failed to screenshot URL #{url}: #{inspect(e)}")
         raise e
     end
