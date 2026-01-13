@@ -49,4 +49,40 @@ defmodule OgImageWeb.ImageHTML do
     </body>
     """
   end
+
+  @doc """
+  Dial template with dark background - modern web3 aesthetic.
+  """
+  def dial_dark(assigns) do
+    ~H"""
+    <body class="bg-[#0A0A0A] flex flex-col h-screen">
+      <div class="shrink-0 pt-24 px-20 text-white">
+        <.dial_logo height="56" class="text-white" />
+      </div>
+      <div class="grow flex items-center px-20">
+        <h1 class="font-extrabold text-white text-[7rem] leading-[1.2]">
+          <%= @text %>
+        </h1>
+      </div>
+    </body>
+    """
+  end
+
+  @doc """
+  Dial template with light background.
+  """
+  def dial_light(assigns) do
+    ~H"""
+    <body class="bg-white flex flex-col h-screen">
+      <div class="shrink-0 pt-24 px-20 text-[#0A0A0A]">
+        <.dial_logo height="56" class="text-[#0A0A0A]" />
+      </div>
+      <div class="grow flex items-center px-20">
+        <h1 class="font-extrabold text-[#0A0A0A] text-[7rem] leading-[1.2]">
+          <%= @text %>
+        </h1>
+      </div>
+    </body>
+    """
+  end
 end

@@ -39,4 +39,25 @@ defmodule OgImageWeb.SharedComponents do
     </svg>
     """
   end
+
+  @doc """
+  Renders the Dial logo (text-based for now, can be replaced with SVG).
+  """
+  attr :height, :string, default: "64"
+  attr :class, :string, default: ""
+
+  def dial_logo(assigns) do
+    height_class = case @height do
+      "56" -> "text-5xl"
+      "64" -> "text-6xl"
+      "148" -> "text-9xl"
+      _ -> "text-6xl"
+    end
+    
+    ~H"""
+    <div class={["font-bold #{height_class} leading-none", @class]}>
+      DIAL
+    </div>
+    """
+  end
 end

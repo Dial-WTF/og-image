@@ -16,6 +16,18 @@ defmodule OgImageWeb.ImageController do
     |> render_image(:dark)
   end
 
+  def show(conn, %{"template" => "dial_dark", "text" => text}) do
+    conn
+    |> assign(:text, prepare_html(text))
+    |> render_image(:dial_dark)
+  end
+
+  def show(conn, %{"template" => "dial_light", "text" => text}) do
+    conn
+    |> assign(:text, prepare_html(text))
+    |> render_image(:dial_light)
+  end
+
   # -- Add more templates here --
 
   def show(conn, _params) do
