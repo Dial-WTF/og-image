@@ -120,3 +120,4 @@ defmodule OgImageWeb.ImageRenderer do
     image_data = NodeJS.call!("screenshot-url", args, binary: true)
     Base.decode64!(image_data)
   end
+end
