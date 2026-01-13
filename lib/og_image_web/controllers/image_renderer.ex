@@ -117,8 +117,13 @@ defmodule OgImageWeb.ImageRenderer do
   end
 
   defp generate_url_image(url, selector) do
+    # Validate URL before processing
+    if is_nil(url) or url == "" do
+      raise ArgumentError, "URL parameter is required"
+    end
+
     # Build args list conditionally - NodeJS expects arguments as a list
-    args = if selector, do: [url, selector], else: [url]
+    args = if selector && selector != "", do: [url, selector], else: [url]
     
     try do
       image_data = NodeJS.call!("screenshot-url", args, binary: true)
@@ -126,6 +131,7 @@ defmodule OgImageWeb.ImageRenderer do
     rescue
       e ->
         Logger.error("Failed to screenshot URL #{url}: #{inspect(e)}")
+        # Return a fallback error image or re-raise
         raise e
     end
   end

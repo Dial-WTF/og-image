@@ -20,6 +20,17 @@ async function screenshotUrl(url, selector) {
   selector = selector || null;
   let file;
 
+  // Validate URL
+  if (!url || typeof url !== "string" || url.trim() === "") {
+    throw new Error("Invalid URL provided");
+  }
+
+  // Ensure URL has a protocol
+  let validUrl = url.trim();
+  if (!validUrl.startsWith("http://") && !validUrl.startsWith("https://")) {
+    validUrl = "https://" + validUrl;
+  }
+
   const browser = await core.launch({
     executablePath,
     headless: true,
@@ -38,7 +49,7 @@ async function screenshotUrl(url, selector) {
     await page.setViewport({ width: 1200, height: 630 });
 
     // Navigate to the URL with extended timeout for slow-loading sites
-    await page.goto(url, {
+    await page.goto(validUrl, {
       waitUntil: "networkidle0",
       timeout: 60000, // Increased to 60 seconds for slow sites
     });
@@ -71,24 +82,18 @@ async function screenshotUrl(url, selector) {
     // Wait for any lazy-loaded content or animations
     await page.waitForTimeout(2000);
 
-    // If a selector is provided, wait for it to be visible
-    if (selector && selector !== null && selector !== undefined && selector !== "") {
-      try {
-        await page.waitForSelector(selector, { timeout: 10000, visible: true });
-      } catch (err) {
-        // If selector doesn't appear, continue anyway (will fallback to full page)
-        console.warn(`Selector "${selector}" not found within timeout, continuing...`);
-      }
-    }
-
     let screenshotOptions = {
       type: "png",
       encoding: "base64",
     };
 
-    // If a selector is provided, screenshot just that element
+    // If a selector is provided, wait for it and screenshot just that element
     if (selector && selector !== null && selector !== undefined && selector !== "") {
       try {
+        // Wait for selector to be visible
+        await page.waitForSelector(selector, { timeout: 10000, visible: true });
+        
+        // Get the element and its bounding box
         const element = await page.$(selector);
         if (!element) {
           // If element not found, just screenshot the whole page instead of failing
@@ -102,7 +107,7 @@ async function screenshotUrl(url, selector) {
           }
         }
       } catch (err) {
-        // If selector fails, just screenshot the whole page
+        // If selector fails or times out, just screenshot the whole page
         console.warn(`Error with selector "${selector}": ${err.message}, screenshotting full page`);
       }
     }
