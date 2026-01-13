@@ -18,9 +18,7 @@ const executablePath =
  */
 async function screenshotUrl(url, selector) {
   selector = selector || null;
-  const width = 1200;
-  const height = 630;
-  const waitTime = 1000;
+  let file;
 
   const browser = await core.launch({
     executablePath,
@@ -36,8 +34,8 @@ async function screenshotUrl(url, selector) {
   try {
     const page = await browser.newPage();
 
-    // Set the viewport size
-    await page.setViewport({ width, height });
+    // Set the viewport size to match standard open graph image cards
+    await page.setViewport({ width: 1200, height: 630 });
 
     // Navigate to the URL
     await page.goto(url, {
@@ -46,7 +44,7 @@ async function screenshotUrl(url, selector) {
     });
 
     // Wait a bit for any animations/transitions
-    await page.waitForTimeout(waitTime);
+    await page.waitForTimeout(1000);
 
     // Wait for fonts to load
     await page.evaluate(async () => {
@@ -72,7 +70,7 @@ async function screenshotUrl(url, selector) {
     }
 
     // Take the screenshot
-    const file = await page.screenshot(screenshotOptions);
+    file = await page.screenshot(screenshotOptions);
 
     await page.close();
   } finally {
