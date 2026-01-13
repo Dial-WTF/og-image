@@ -47,7 +47,12 @@ defmodule OgImageWeb.SharedComponents do
   attr :class, :string, default: ""
 
   def dial_logo(assigns) do
-    height_class = if assigns.height == "56", do: "text-5xl", else: if assigns.height == "148", do: "text-9xl", else: "text-6xl"
+    height_class = 
+      cond do
+        assigns.height == "56" -> "text-5xl"
+        assigns.height == "148" -> "text-9xl"
+        true -> "text-6xl"
+      end
     
     ~H"""
     <div class={["font-bold", height_class, "leading-none", @class]}>
