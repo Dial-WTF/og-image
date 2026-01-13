@@ -2,9 +2,11 @@
   "name": "og-image",
   "private": true,
   "scripts": {
+    "setup": "just setup",
     "dev": "just dev",
     "bootstrap": "just bootstrap",
     "test": "just test",
+    "build": "just assets",
     "ci": "just ci"
   }
 }

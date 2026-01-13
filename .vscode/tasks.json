@@ -10,7 +10,14 @@
       "presentation": {
         "reveal": "always",
         "panel": "dedicated"
-      }
+      },
+      "isBackground": true
+    },
+    {
+      "label": "setup",
+      "type": "shell",
+      "command": "just setup",
+      "problemMatcher": []
     },
     {
       "label": "bootstrap",
@@ -36,6 +43,12 @@
       "type": "shell",
       "command": "just ci",
       "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "assets",
+      "type": "shell",
+      "command": "just assets",
       "problemMatcher": []
     }
   ]
