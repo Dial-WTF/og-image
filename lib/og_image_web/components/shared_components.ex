@@ -41,21 +41,15 @@ defmodule OgImageWeb.SharedComponents do
   end
 
   @doc """
-  Renders the Dial logo with icon and text.
+  Renders the Dial logo - brand name at the top.
   """
   attr :height, :string, default: "64"
   attr :class, :string, default: ""
   
   def dial_logo(assigns) do
     ~H"""
-    <div class={["flex items-center gap-3", @class]}>
-      <img 
-        src="/images/dial-logo.svg" 
-        alt="Dial" 
-        class="h-12 w-auto"
-        style="filter: brightness(0) invert(1);"
-      />
-      <span class="text-4xl font-bold">Dial</span>
+    <div class={["text-5xl font-bold", @class]}>
+      Dial
     </div>
     """
   end
