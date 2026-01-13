@@ -115,9 +115,18 @@ defmodule OgImageWeb.ImageRenderer do
   end
 
   defp generate_url_image(url, selector) do
-    # Build args list conditionally
+    # Build args list conditionally - NodeJS expects arguments as a list
     args = if selector, do: [url, selector], else: [url]
-    image_data = NodeJS.call!("screenshot-url", args, binary: true)
-    Base.decode64!(image_data)
+    
+    try do
+      image_data = NodeJS.call!("screenshot-url", args, binary: true)
+      Base.decode64!(image_data)
+    rescue
+      e ->
+        # Log error for debugging
+        require Logger
+        Logger.error("Failed to screenshot URL #{url}: #{inspect(e)}")
+        raise e
+    end
   end
 end
