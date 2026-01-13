@@ -19,7 +19,7 @@ ARG DEBIAN_VERSION=bullseye-20231009-slim
 ARG BUILDER_IMAGE="hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-${DEBIAN_VERSION}"
 ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
 
-FROM ${BUILDER_IMAGE} as builder
+FROM ${BUILDER_IMAGE} AS builder
 
 # install build dependencies
 RUN apt-get update -y && apt-get install -y build-essential git curl \
@@ -82,8 +82,8 @@ FROM ${RUNNER_IMAGE}
 # https://dev.to/cloudx/how-to-use-puppeteer-inside-a-docker-container-568c
 RUN apt-get update -y \
   && apt-get install -y libstdc++6 openssl libncurses5 locales ca-certificates curl gnupg procps \
-  && curl --location --silent https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-  && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+  && curl -fsSL https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome-keyring.gpg \
+  && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
   && apt-get update \
   && apt-get install google-chrome-stable -y --no-install-recommends \
   && apt-get clean && rm -f /var/lib/apt/lists/*_*
