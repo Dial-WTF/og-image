@@ -1,0 +1,13 @@
+# Files and directories that should not trigger a new deployment when changed
+README.md
+LICENSE.md
+docs/
+*.md
+
+# Development files
+.git/
+.github/
+
+# Test files
+test/
+*_test.exs
