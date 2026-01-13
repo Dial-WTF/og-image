@@ -1,3 +1,6 @@
+# Use mise to ensure tools are in PATH
+set shell := ["bash", "-c"]
+
 # List all commands
 default:
     @just --list
@@ -11,56 +14,56 @@ install-tools:
 
 # Setup project (run once after clone)
 setup: install-tools
-    mix deps.get
-    cd priv/js && pnpm install
-    mix assets.setup
-    mix assets.build
+    mise exec -- mix deps.get
+    cd priv/js && mise exec -- pnpm install
+    mise exec -- mix assets.setup
+    mise exec -- mix assets.build
 
 # Start the dev server (with asset watchers)
 dev:
-    iex -S mix phx.server
+    mise exec -- iex -S mix phx.server
 
 # Start dev server without iex console
 dev-no-iex:
-    mix phx.server
+    mise exec -- mix phx.server
 
 # Install all dependencies
 bootstrap:
-    mix deps.get
-    cd priv/js && pnpm install
+    mise exec -- mix deps.get
+    cd priv/js && mise exec -- pnpm install
 
 # Run tests
 test:
-    mix test
+    mise exec -- mix test
 
 # Run tests in watch mode
 test-watch:
-    mix test.watch
+    mise exec -- mix test.watch
 
 # Format code
 fmt:
-    mix format
+    mise exec -- mix format
 
 # Check formatting
 fmt-check:
-    mix format --check-formatted
+    mise exec -- mix format --check-formatted
 
 # Compile the project
 compile:
-    mix compile --warnings-as-errors
+    mise exec -- mix compile --warnings-as-errors
 
 # Clean build artifacts
 clean:
-    mix clean
+    mise exec -- mix clean
     rm -rf _build
 
 # Build assets
 assets:
-    mix assets.build
+    mise exec -- mix assets.build
 
 # Deploy-ready asset build (minified)
 assets-deploy:
-    mix assets.deploy
+    mise exec -- mix assets.deploy
 
 # Run all CI checks
 ci: fmt-check compile test
