@@ -2,8 +2,15 @@
 default:
     @just --list
 
+# Install mise and project tools
+install-tools:
+    @echo "Installing mise..."
+    @command -v mise >/dev/null 2>&1 || curl https://mise.run | sh
+    @echo "Installing project tools (elixir, erlang, node)..."
+    mise install
+
 # Setup project (run once after clone)
-setup:
+setup: install-tools
     mix deps.get
     cd priv/js && pnpm install
     mix assets.setup
