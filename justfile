@@ -1,6 +1,3 @@
-# Use mise to ensure tools are in PATH
-set shell := ["bash", "-c"]
-
 # List all commands
 default:
     @just --list
