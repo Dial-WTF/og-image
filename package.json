@@ -1,0 +1,10 @@
+{
+  "name": "og-image",
+  "private": true,
+  "scripts": {
+    "dev": "just dev",
+    "bootstrap": "just bootstrap",
+    "test": "just test",
+    "ci": "just ci"
+  }
+}

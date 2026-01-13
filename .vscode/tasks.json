@@ -1,0 +1,42 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "dev",
+      "type": "shell",
+      "command": "just dev",
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "bootstrap",
+      "type": "shell",
+      "command": "just bootstrap",
+      "problemMatcher": []
+    },
+    {
+      "label": "test",
+      "type": "shell",
+      "command": "just test",
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "fmt",
+      "type": "shell",
+      "command": "just fmt",
+      "problemMatcher": []
+    },
+    {
+      "label": "ci",
+      "type": "shell",
+      "command": "just ci",
+      "group": "test",
+      "problemMatcher": []
+    }
+  ]
+}
