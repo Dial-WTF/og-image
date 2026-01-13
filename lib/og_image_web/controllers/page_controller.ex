@@ -3,7 +3,7 @@ defmodule OgImageWeb.PageController do
 
   def home(conn, _params) do
     conn
-    |> assign(:page_title, "Open Graph Image Generator by SavvyCal")
+    |> assign(:page_title, "Open Graph Image Generator for Dial")
     |> render(:home, layout: false)
   end
 end
