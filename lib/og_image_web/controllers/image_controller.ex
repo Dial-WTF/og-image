@@ -29,6 +29,12 @@ defmodule OgImageWeb.ImageController do
     |> render_image(:dial_light)
   end
 
+  # Screenshot from URL
+  def show(conn, %{"url" => url}) do
+    selector = Map.get(conn.params, "selector")
+    render_url_image(conn, url, selector)
+  end
+
   # -- Add more templates here --
 
   def show(conn, _params) do

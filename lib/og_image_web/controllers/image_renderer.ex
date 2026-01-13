@@ -90,4 +90,33 @@ defmodule OgImageWeb.ImageRenderer do
   defp cache_dir do
     Path.join(System.tmp_dir!(), "og_image_cache")
   end
-end
+
+  @doc """
+  Renders an image by screenshotting a URL, optionally screenshotting just a specific element.
+  """
+  @spec render_url_image(Plug.Conn.t(), url :: String.t(), selector :: String.t() | nil) ::
+          Plug.Conn.t()
+  def render_url_image(%{path_info: ["image"]} = conn, url, selector) do
+    image = generate_url_image(url, selector)
+
+    conn
+    |> put_resp_content_type("image/png", nil)
+    |> put_resp_header(
+      "cache-control",
+      "public, immutable, no-transform, s-maxage=31536000, max-age=31536000"
+    )
+    |> send_resp(200, image)
+  end
+
+  def render_url_image(conn, _url, _selector) do
+    conn
+    |> put_status(:not_found)
+    |> text("URL screenshots only available via /image endpoint")
+  end
+
+  defp generate_url_image(url, selector) do
+    # Pass selector as nil if not provided, Node.js will handle it
+    selector_arg = selector || nil
+    image_data = NodeJS.call!("screenshot-url", [url, selector_arg], binary: true)
+    Base.decode64!(image_data)
+  end
