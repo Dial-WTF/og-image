@@ -1,9 +1,5 @@
 {
   "[justfile]": {
-    "editor.formatOnSave": false,
-    "editor.defaultFormatter": null
-  },
-  "files.associations": {
-    "justfile": "justfile"
+    "editor.formatOnSave": false
   }
 }
