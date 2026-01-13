@@ -37,19 +37,49 @@ async function screenshotUrl(url, selector) {
     // Set the viewport size to match standard open graph image cards
     await page.setViewport({ width: 1200, height: 630 });
 
-    // Navigate to the URL
+    // Navigate to the URL with extended timeout for slow-loading sites
     await page.goto(url, {
       waitUntil: "networkidle0",
-      timeout: 30000,
+      timeout: 60000, // Increased to 60 seconds for slow sites
     });
-
-    // Wait a bit for any animations/transitions
-    await page.waitForTimeout(1000);
 
     // Wait for fonts to load
     await page.evaluate(async () => {
       await document.fonts.ready;
     });
+
+    // Wait for images to load
+    await page.evaluate(async () => {
+      const selectors = Array.from(document.querySelectorAll("img"));
+      await Promise.all(
+        selectors.map((img) => {
+          if (img.complete) {
+            if (img.naturalHeight !== 0) return;
+            // Image failed, but don't throw - just continue
+            return Promise.resolve();
+          }
+          return new Promise((resolve) => {
+            img.addEventListener("load", resolve);
+            img.addEventListener("error", resolve); // Don't fail on image errors
+            // Timeout after 5 seconds per image
+            setTimeout(resolve, 5000);
+          });
+        })
+      );
+    });
+
+    // Wait for any lazy-loaded content or animations
+    await page.waitForTimeout(2000);
+
+    // If a selector is provided, wait for it to be visible
+    if (selector && selector !== null && selector !== undefined && selector !== "") {
+      try {
+        await page.waitForSelector(selector, { timeout: 10000, visible: true });
+      } catch (err) {
+        // If selector doesn't appear, continue anyway (will fallback to full page)
+        console.warn(`Selector "${selector}" not found within timeout, continuing...`);
+      }
+    }
 
     let screenshotOptions = {
       type: "png",
